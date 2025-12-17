@@ -60,15 +60,11 @@ public class TenantInfoJpaConfig {
     public LocalContainerEntityManagerFactoryBean tenantInfoEmf() {
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
         emf.setDataSource(defaultDataSource);
-        emf.setPackagesToScan("com.hosam.demo.tenantConfig"); // TenantInfo entity package
+        emf.setPackagesToScan("com.hosam.demo.tenantConfig");
         emf.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
 
         Map<String, Object> jpaProps = new HashMap<>();
-        // MySQL 8 dialect for proper SQL generation
-        jpaProps.put("hibernate.dialect",
-                "org.hibernate.dialect.MySQL8Dialect");
-        // Validate schema - assumes tables already exist
-        jpaProps.put("hibernate.hbm2ddl.auto", "validate");
+        jpaProps.put("hibernate.hbm2ddl.auto", "update");
 
         emf.setJpaPropertyMap(jpaProps);
         return emf;

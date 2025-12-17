@@ -23,12 +23,6 @@ import java.util.Map;
  * It configures Hibernate to use:
  * - DataSourceMultiTenantConnectionProvider: Routes connections to tenant-specific databases
  * - TenantIdentifierResolver: Determines the current tenant from the request context
- *
- * Additional Hibernate properties configured:
- * - SQL logging and formatting for debugging
- * - Statistics generation for performance monitoring
- * - Batch processing for optimized insert/update operations
- *
  * @author HosamUsf
  */
 @Configuration
@@ -37,13 +31,11 @@ import java.util.Map;
 
 public class HibernateConfig {
 
-    /** The default DataSource for initial Hibernate setup */
+    // The default DataSource for initial Hibernate setup
     private final DataSource dataSource;
 
-    /** Provider that supplies tenant-specific database connections */
     private final DataSourceMultiTenantConnectionProvider multiTenantConnectionProvider;
 
-    /** Resolver that identifies the current tenant from the request context */
     private final TenantIdentifierResolver currentTenantIdentifierResolver;
 
     /**

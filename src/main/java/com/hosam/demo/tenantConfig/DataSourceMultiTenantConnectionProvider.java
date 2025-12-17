@@ -18,23 +18,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * separate database, and this provider dynamically routes connections to the appropriate
  * tenant database based on the tenant identifier.
  *
- * Key features:
- * - Caches tenant DataSources in a ConcurrentHashMap for performance
- * - Lazily creates DataSource connections on first access
- * - Looks up tenant database credentials from the TenantInfo repository
- * - Falls back to default DataSource when no tenant is specified
- *
  * @author HosamUsf
  */
 @Component
 public class DataSourceMultiTenantConnectionProvider
         extends AbstractDataSourceBasedMultiTenantConnectionProviderImpl<String> {
 
-    private static final long serialVersionUID = 1L;
-
     private final transient DataSource defaultDataSource;
 
-    /** Repository to fetch tenant database connection details */
     private final TenantInfoRepository tenantRepo;
 
     /** Cache of tenant DataSources to avoid recreating connections */
@@ -50,8 +41,6 @@ public class DataSourceMultiTenantConnectionProvider
     /**
      * Returns the default DataSource when Hibernate needs any connection
      * (e.g., during startup or when no tenant context is set).
-     *
-     * @return The default/master DataSource
      */
     @Override
     protected DataSource selectAnyDataSource() {
@@ -61,14 +50,10 @@ public class DataSourceMultiTenantConnectionProvider
     /**
      * Selects the appropriate DataSource for the given tenant identifier.
      * Uses memoization to cache and reuse DataSource instances.
-     *
-     * @param tenantIdentifier The tenant ID to get the DataSource for
-     * @return DataSource configured for the specified tenant
      */
-    protected DataSource selectDataSource(Object tenantIdentifier) {
-        String tenantId = tenantIdentifier.toString();
+    protected DataSource selectDataSource(String tenantIdentifier) {
         // Use computeIfAbsent to lazily create and cache DataSources
-        return dataSources.computeIfAbsent(tenantId, this::createDataSource);
+        return dataSources.computeIfAbsent(tenantIdentifier, this::createDataSource);
     }
 
     /**
@@ -80,7 +65,7 @@ public class DataSourceMultiTenantConnectionProvider
      * @throws IllegalArgumentException if tenant is not found or inactive
      */
     private DataSource createDataSource(String tenantId) {
-        TenantInfo info = tenantRepo.findByTenantIdAndActiveIsTrue(tenantId)
+        TenantInfo info = tenantRepo.findByTenantId(tenantId)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown tenant " + tenantId));
 
         return DataSourceBuilder.create()

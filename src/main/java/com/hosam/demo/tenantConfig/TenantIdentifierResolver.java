@@ -47,16 +47,6 @@ public class TenantIdentifierResolver implements CurrentTenantIdentifierResolver
         return currentTenant;
     }
 
-    /**
-     * Indicates whether existing sessions should be validated against
-     * the current tenant identifier.
-     *
-     * Returning true means Hibernate will validate that existing sessions
-     * match the current tenant, providing additional safety against
-     * cross-tenant data access.
-     *
-     * @return true to enable session validation
-     */
     @Override
     public boolean validateExistingCurrentSessions() {
         return true;

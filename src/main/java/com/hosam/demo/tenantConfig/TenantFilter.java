@@ -34,13 +34,6 @@ import java.io.IOException;
 public class TenantFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(TenantFilter.class);
 
-    /**
-     * Processes each HTTP request to establish tenant context.
-     *
-     * @param request     The HTTP request
-     * @param response    The HTTP response
-     * @param filterChain The filter chain to continue processing
-     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
